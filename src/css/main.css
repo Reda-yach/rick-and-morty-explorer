@@ -2,7 +2,11 @@
    MAIN.CSS - Global styles & theming
    Rick & Morty Explorer
    ============================================ */
-
+/* 
+  Kleurenpalet gebaseerd op de Rick & Morty huisstijl
+  Groen (#97ce4c) = Rick's portal kleur
+  Blauw (#00d4ff) = Sci-fi accent
+*/
 /* --- CSS Variables (themes) --- */
 :root {
   --bg-primary: #0d0d0d;
