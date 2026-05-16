@@ -1,0 +1,13 @@
+{
+  "name": "rick-and-morty-explorer",
+  "version": "1.0.0",
+  "description": "Interactive SPA for Web Advanced - Rick & Morty API Explorer",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

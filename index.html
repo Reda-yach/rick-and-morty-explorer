@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rick & Morty Explorer</title>
+    <link rel="stylesheet" href="./src/css/main.css" />
+    <link rel="stylesheet" href="./src/css/cards.css" />
+    <link rel="stylesheet" href="./src/css/filters.css" />
+  </head>
+  <body data-theme="dark">
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">🛸</span>
+          <h1>Rick &amp; Morty <span>Explorer</span></h1>
+        </div>
+        <nav class="nav-tabs">
+          <button class="nav-btn active" data-page="characters">Characters</button>
+          <button class="nav-btn" data-page="episodes">Episodes</button>
+          <button class="nav-btn" data-page="locations">Locations</button>
+          <button class="nav-btn" data-page="favorites">
+            ⭐ Favourites <span id="fav-count" class="badge">0</span>
+          </button>
+        </nav>
+        <button id="theme-toggle" class="theme-btn" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main id="app">
+      <!-- Characters Page -->
+      <section id="page-characters" class="page active">
+        <div class="controls">
+          <input type="text" id="search-characters" class="search-input" placeholder="🔍 Search characters..." />
+          <div class="filter-group">
+            <select id="filter-status" class="filter-select">
+              <option value="">All statuses</option>
+              <option value="alive">Alive</option>
+              <option value="dead">Dead</option>
+              <option value="unknown">Unknown</option>
+            </select>
+            <select id="filter-species" class="filter-select">
+              <option value="">All species</option>
+              <option value="human">Human</option>
+              <option value="alien">Alien</option>
+              <option value="humanoid">Humanoid</option>
+              <option value="robot">Robot</option>
+              <option value="unknown">Unknown</option>
+            </select>
+            <select id="filter-gender" class="filter-select">
+              <option value="">All genders</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="genderless">Genderless</option>
+              <option value="unknown">Unknown</option>
+            </select>
+            <select id="sort-characters" class="filter-select">
+              <option value="id-asc">Sort: ID ↑</option>
+              <option value="id-desc">Sort: ID ↓</option>
+              <option value="name-asc">Sort: Name A-Z</option>
+              <option value="name-desc">Sort: Name Z-A</option>
+            </select>
+          </div>
+          <p id="result-count" class="result-count"></p>
+        </div>
+        <div id="characters-grid" class="card-grid"></div>
+        <div id="loader-characters" class="loader hidden">
+          <div class="spinner"></div><p>Loading from the multiverse...</p>
+        </div>
+        <div class="pagination" id="pagination-characters"></div>
+      </section>
+
+      <!-- Episodes Page -->
+      <section id="page-episodes" class="page hidden">
+        <div class="controls">
+          <input type="text" id="search-episodes" class="search-input" placeholder="🔍 Search episodes..." />
+          <select id="filter-season" class="filter-select">
+            <option value="">All seasons</option>
+            <option value="S01">Season 1</option>
+            <option value="S02">Season 2</option>
+            <option value="S03">Season 3</option>
+            <option value="S04">Season 4</option>
+            <option value="S05">Season 5</option>
+          </select>
+        </div>
+        <div id="episodes-grid" class="card-grid episodes-grid"></div>
+        <div id="loader-episodes" class="loader hidden">
+          <div class="spinner"></div><p>Fetching episodes...</p>
+        </div>
+        <div class="pagination" id="pagination-episodes"></div>
+      </section>
+
+      <!-- Locations Page -->
+      <section id="page-locations" class="page hidden">
+        <div class="controls">
+          <input type="text" id="search-locations" class="search-input" placeholder="🔍 Search locations..." />
+          <select id="filter-loc-type" class="filter-select">
+            <option value="">All types</option>
+            <option value="planet">Planet</option>
+            <option value="space station">Space Station</option>
+            <option value="microverse">Microverse</option>
+            <option value="cluster">Cluster</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div id="locations-grid" class="card-grid locations-grid"></div>
+        <div id="loader-locations" class="loader hidden">
+          <div class="spinner"></div><p>Scanning dimensions...</p>
+        </div>
+        <div class="pagination" id="pagination-locations"></div>
+      </section>
+
+      <!-- Favorites Page -->
+      <section id="page-favorites" class="page hidden">
+        <div class="favorites-header">
+          <h2>⭐ Your Favourites</h2>
+          <button id="clear-favorites" class="btn-danger">Clear all</button>
+        </div>
+        <p id="no-favorites" class="empty-msg hidden">No favourites yet. Go add some characters!</p>
+        <div id="favorites-grid" class="card-grid"></div>
+      </section>
+    </main>
+
+    <!-- CHARACTER DETAIL MODAL -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-box">
+        <button class="modal-close">✕</button>
+        <div id="modal-content"></div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script type="module" src="./src/js/main.js"></script>
+  </body>
+</html>
