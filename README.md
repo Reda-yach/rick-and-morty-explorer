@@ -153,3 +153,9 @@ npm run preview
 - Vite documentatie: https://vitejs.dev/
 - Lescursus Web Advanced — EHB (2024-2025)
 - AI-assistent (Claude): gebruikt voor code review en probleemoplossing. Chatlog beschikbaar op aanvraag.
+
+## 📝 Voortgang
+- [x] Project opgezet met Vite
+- [x] Rick and Morty API gekoppeld
+- [ ] Favorieten systeem testen
+- [ ] Responsive design verfijnen
