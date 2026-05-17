@@ -34,6 +34,11 @@ const fetchFromAPI = async (endpoint) => {
  * Fetch characters with filters
  * Demonstrates: template literals building query strings, Promises
  */
+/**
+ * Haalt een lijst van characters op van de Rick & Morty API
+ * Ondersteunt filtering op naam, status, species en gender
+ * Geeft een object terug met { info: {pages, count}, results: [...] }
+ */
 export const fetchCharacters = async ({ page = 1, name = '', status = '', species = '', gender = '' } = {}) => {
   const params = new URLSearchParams();
   params.set('page', page);
