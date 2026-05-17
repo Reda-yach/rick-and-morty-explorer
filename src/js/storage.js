@@ -39,6 +39,11 @@ export const saveFavorites = (favorites) => {
  * Demonstrates: array methods (findIndex, filter, push), const
  * @returns {boolean} true if added, false if removed
  */
+/**
+ * Voegt een character toe aan favorieten of verwijdert hem
+ * Gebruikt findIndex om te checken of character al bestaat
+ * Slaat bijgewerkte array op via JSON.stringify in localStorage
+ */
 export const toggleFavorite = (character) => {
   const favorites = getFavorites();
   const existingIndex = favorites.findIndex(f => f.id === character.id);
