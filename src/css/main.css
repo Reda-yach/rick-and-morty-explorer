@@ -196,8 +196,8 @@ body {
 .loader.hidden { display: none; }
 
 .spinner {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: 4px solid var(--border-color);
   border-top-color: var(--color-primary);
   border-radius: 50%;
