@@ -151,7 +151,7 @@ const loadCharacters = async () => {
 
   } catch (error) {
     // No results (API returns 404 for empty filter results)
-    renderNoResults(grid, `No characters found for your search. <br><small>${error.message}</small>`);
+    renderNoResults(grid, `Geen characters gevonden. Probeer een andere zoekterm of filter. 🔭`);
     pagNav.innerHTML = '';
     document.querySelector('#result-count').textContent = '0 characters found';
   } finally {
