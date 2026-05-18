@@ -138,9 +138,14 @@ npm run preview
 
 ---
 
-## 📸 Screenshots
+## 📸 Functionaliteiten in beeld
 
-*(Screenshots toe te voegen na deployment)*
+- **Characters pagina:** grid met 20 characters per pagina, 
+  filterbaar op status/species/gender, sorteerbaar op naam of ID
+- **Episodes pagina:** alle episodes per seizoen te filteren
+- **Locations pagina:** alle dimensies en planeten uit het universum
+- **Favorieten:** opgeslagen via localStorage, blijft na herladen
+- **Dark/Light mode:** themavoorkeur wordt bewaard
 
 ---
 
