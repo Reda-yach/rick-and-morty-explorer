@@ -337,3 +337,9 @@ body {
   #app { padding: 1rem; }
   .modal-char img { width: 120px; height: 120px; }
 }
+
+@media (max-width: 480px) {
+  .logo h1 { font-size: 1rem; }
+  .nav-btn { padding: 0.35rem 0.6rem; font-size: 0.78rem; }
+  .controls { gap: 0.5rem; }
+}
