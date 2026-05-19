@@ -6,6 +6,9 @@
 //   querySelector), template literals, arrow functions,
 //   events, Observer API (IntersectionObserver)
 // ============================================
+// ui.js - Verantwoordelijk voor alle DOM rendering
+// Bevat: kaart rendering, paginatie, modal, toast meldingen
+// en Observer API implementatie voor animaties
 
 import { isFavorite, toggleFavorite } from './storage.js';
 
