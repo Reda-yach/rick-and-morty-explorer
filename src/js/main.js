@@ -9,6 +9,10 @@
 //   localStorage, ternary operator, for...of, fetch
 // ============================================
 
+// main.js - Hoofdbestand van de applicatie
+// Beheert: navigatie, state, filters, zoekfunctie,
+// paginatie en de connectie tussen API, opslag en UI
+
 import {
   fetchCharacters, fetchEpisodes, fetchLocations, fetchCharacterById
 } from './api.js';
