@@ -68,6 +68,11 @@ export const fetchCharactersByIds = async (ids) => {
 };
 
 // ---- Episodes ----
+/**
+ * Haalt episodes op van de API
+ * Filterbaar op naam en seizoenscode (bv. S01, S02)
+ * Geeft paginatie info terug via data.info.pages
+ */
 
 export const fetchEpisodes = async ({ page = 1, name = '', episode = '' } = {}) => {
   const params = new URLSearchParams();
