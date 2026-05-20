@@ -1,5 +1,9 @@
 'use strict';
 
+// storage.js - Beheert alle localStorage interacties
+// Slaat op: favorieten, thema voorkeur, laatste bezochte pagina
+// Data blijft bewaard tussen sessies via JSON serialisatie
+
 // ============================================
 // storage.js - LocalStorage helpers
 // Demonstrates: localStorage, JSON.parse/stringify,
