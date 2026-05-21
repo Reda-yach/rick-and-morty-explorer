@@ -68,6 +68,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  /* Flexbox layout voor header - logo links, nav midden, toggle rechts */
   flex-wrap: wrap;
 }
 
