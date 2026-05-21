@@ -147,6 +147,13 @@ npm run preview
 - **Favorieten:** opgeslagen via localStorage, blijft na herladen
 - **Dark/Light mode:** themavoorkeur wordt bewaard
 
+## 🧪 Testen
+De applicatie is getest op:
+- Google Chrome (nieuwste versie)
+- Mozilla Firefox
+- Microsoft Edge
+- Mobiel (responsive op 375px en 768px)
+
 ---
 
 ## 📚 Gebruikte bronnen
