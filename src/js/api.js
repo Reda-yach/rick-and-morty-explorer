@@ -84,6 +84,11 @@ export const fetchEpisodes = async ({ page = 1, name = '', episode = '' } = {}) 
 };
 
 // ---- Locations ----
+/**
+ * Haalt locaties op van de Rick & Morty API
+ * Filterbaar op naam en type (bv. planet, space station)
+ * Elke locatie bevat een lijst van bewoners als URL-array
+ */
 
 export const fetchLocations = async ({ page = 1, name = '', type = '' } = {}) => {
   const params = new URLSearchParams();
