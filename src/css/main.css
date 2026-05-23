@@ -1,13 +1,13 @@
 /* ============================================
    MAIN.CSS - Global styles & theming
-   Rick & Morty Explorer
+   dark theme is standaard, light theme via data-theme="light" op body
    ============================================ */
+
 /* 
   Kleurenpalet gebaseerd op de Rick & Morty huisstijl
   Groen (#97ce4c) = Rick's portal kleur
-  Blauw (#00d4ff) = Sci-fi accent
+  Blauw (#00d4ff) = sci-fi accent
 */
-/* --- CSS Variables (themes) --- */
 :root {
   --bg-primary: #0d0d0d;
   --bg-secondary: #141414;
@@ -61,6 +61,7 @@ body {
   backdrop-filter: blur(12px);
 }
 
+/* Flexbox layout voor header - logo links, nav midden, toggle rechts */
 .header-inner {
   max-width: 1400px;
   margin: 0 auto;
@@ -68,7 +69,6 @@ body {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  /* Flexbox layout voor header - logo links, nav midden, toggle rechts */
   flex-wrap: wrap;
 }
 
@@ -299,7 +299,6 @@ body {
 }
 .modal-close:hover { border-color: var(--color-danger); color: var(--color-danger); }
 
-/* Modal content styles */
 .modal-char { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 .modal-char img { width: 180px; height: 180px; border-radius: var(--radius); object-fit: cover; flex-shrink: 0; }
 .modal-info h2 { font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--color-primary); }

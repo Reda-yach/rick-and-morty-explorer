@@ -1,5 +1,7 @@
 /* ============================================
-   CARDS.CSS - Card grid & card styles
+   cards.css - stijlen voor alle kaartcomponenten
+   bevat: character cards, episode cards, location cards
+   en de no-results placeholder
    ============================================ */
 
 .card-grid {
@@ -58,7 +60,7 @@
 
 .char-card .card-meta span { display: flex; align-items: center; gap: 0.3rem; }
 
-/* Status dot */
+/* status stip kleuren */
 .status-dot {
   width: 8px;
   height: 8px;
@@ -69,7 +71,7 @@
 .status-dot.dead   { background: var(--color-danger); }
 .status-dot.unknown { background: var(--text-muted); }
 
-/* Fav button on card */
+/* favoriet knop rechtsboven op de kaart */
 .fav-btn {
   position: absolute;
   top: 0.5rem;
@@ -86,7 +88,6 @@
 .fav-btn:hover { transform: scale(1.2); background: rgba(0,0,0,0.8); }
 .fav-btn.active { background: rgba(245, 166, 35, 0.25); }
 
-/* Card id badge */
 .card-id {
   position: absolute;
   top: 0.5rem;
@@ -190,7 +191,7 @@
   margin-top: 0.25rem;
 }
 
-/* ---- No Results ---- */
+/* geen resultaten */
 .no-results {
   grid-column: 1 / -1;
   text-align: center;

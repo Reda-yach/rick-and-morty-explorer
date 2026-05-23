@@ -1,24 +1,15 @@
 'use strict';
 
-// ============================================
-// main.js - Application entry point
-// Demonstrates: ALL required JS concepts:
-//   const, let, arrow functions, template literals,
-//   array methods, async/await, Promises, callbacks,
-//   DOM manipulation, events, Observer API,
-//   localStorage, ternary operator, for...of, fetch
-// ============================================
-
-// main.js - Hoofdbestand van de applicatie
-// Beheert: navigatie, state, filters, zoekfunctie,
+// main.js - het hoofdbestand van de applicatie
+// beheert: navigatie, state, filters, zoekfunctie,
 // paginatie en de connectie tussen API, opslag en UI
 
 import {
-  fetchCharacters, fetchEpisodes, fetchLocations, fetchCharacterById
+  fetchCharacters, fetchEpisodes, fetchLocations
 } from './api.js';
 
 import {
-  getFavorites, clearFavorites, getTheme, saveTheme, saveLastPage, getLastPage, isFavorite
+  getFavorites, clearFavorites, getTheme, saveTheme, saveLastPage, getLastPage
 } from './storage.js';
 
 import {
@@ -27,369 +18,361 @@ import {
   renderPagination, renderNoResults, renderCharacterModal, initCardObserver
 } from './ui.js';
 
-// ============================================================
-// STATE - Application state object
-// ============================================================
-const state = {
-  characters: { page: 1, total: 1, filters: { name: '', status: '', species: '', gender: '', sort: 'id-asc' } },
-  episodes:   { page: 1, total: 1, filters: { name: '', episode: '' } },
-  locations:  { page: 1, total: 1, filters: { name: '', type: '' } },
-  currentPage: getLastPage(),
+// centrale state van de applicatie
+// houdt huidige pagina, filters en paginanummer bij per sectie
+// wordt bijgewerkt door filter- en zoekevenementen
+const staat = {
+  characters: { pagina: 1, totaal: 1, filters: { naam: '', status: '', species: '', gender: '', sortering: 'id-asc' } },
+  episodes:   { pagina: 1, totaal: 1, filters: { naam: '', seizoen: '' } },
+  locations:  { pagina: 1, totaal: 1, filters: { naam: '', type: '' } },
+  huidigePagina: getLastPage(),
 };
 
-// IntersectionObserver for card entrance animation (Observer API)
-const cardObserver = initCardObserver();
+// observer voor de kaart animaties
+const kaartObserver = initCardObserver();
 
-// ============================================================
-// THEME
-// ============================================================
+// -----------------------------------------------
+// THEMA
+// past het thema toe op de body en slaat de keuze op in localStorage
+// wordt aangeroepen bij laden en bij klikken op de toggle knop
+// -----------------------------------------------
 
-const applyTheme = (theme) => {
-  document.body.dataset.theme = theme;
-  document.querySelector('#theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-  saveTheme(theme);
+const pasThemaToe = (thema) => {
+  document.body.dataset.theme = thema;
+  // zon = light mode, maan = dark mode
+  document.querySelector('#theme-toggle').textContent = thema === 'dark' ? '☀️' : '🌙';
+  saveTheme(thema);
 };
 
-// Init theme from localStorage (user preference persisted)
-applyTheme(getTheme());
+pasThemaToe(getTheme());
 
 document.querySelector('#theme-toggle').addEventListener('click', () => {
-  const newTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-  applyTheme(newTheme);
+  const nieuwThema = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  pasThemaToe(nieuwThema);
 });
 
-// ============================================================
-// NAVIGATION
-// ============================================================
+// -----------------------------------------------
+// NAVIGATIE
+// pagina wisselen en de juiste data laden
+// laatste pagina wordt opgeslagen zodat je na herladen terugkomt
+// -----------------------------------------------
 
-const pages = ['characters', 'episodes', 'locations', 'favorites'];
+const paginaNamen = ['characters', 'episodes', 'locations', 'favorites'];
 
-const navigateTo = (pageName) => {
-  state.currentPage = pageName;
-  saveLastPage(pageName);
+const gaNaar = (paginaNaam) => {
+  staat.huidigePagina = paginaNaam;
+  saveLastPage(paginaNaam);
 
-  // Hide all pages, show active
-  pages.forEach(p => {
-    document.querySelector(`#page-${p}`).classList.toggle('hidden', p !== pageName);
-    document.querySelector(`#page-${p}`).classList.toggle('active', p === pageName);
+  // alle paginas verbergen en alleen de juiste tonen
+  paginaNamen.forEach(p => {
+    document.querySelector(`#page-${p}`).classList.toggle('hidden', p !== paginaNaam);
+    document.querySelector(`#page-${p}`).classList.toggle('active', p === paginaNaam);
   });
 
-  // Update nav buttons
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.page === pageName);
+  // nav knop actief zetten
+  document.querySelectorAll('.nav-btn').forEach(knop => {
+    knop.classList.toggle('active', knop.dataset.page === paginaNaam);
   });
 
-  // Load data for page
-  if (pageName === 'characters') loadCharacters();
-  if (pageName === 'episodes')   loadEpisodes();
-  if (pageName === 'locations')  loadLocations();
-  if (pageName === 'favorites')  renderFavorites();
+  if (paginaNaam === 'characters') laadCharacters();
+  if (paginaNaam === 'episodes')   laadEpisodes();
+  if (paginaNaam === 'locations')  laadLocaties();
+  if (paginaNaam === 'favorites')  toonFavorieten();
 };
 
-// Attach nav events
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => navigateTo(btn.dataset.page));
+document.querySelectorAll('.nav-btn').forEach(knop => {
+  knop.addEventListener('click', () => gaNaar(knop.dataset.page));
 });
 
-// ============================================================
+// -----------------------------------------------
 // CHARACTERS
-// ============================================================
+// -----------------------------------------------
 
-const sortCharacters = (chars, sort) => {
-  // Demonstrates: array sort, arrow functions, ternary operator
-  const sorted = [...chars];
-  const [field, dir] = sort.split('-');
-  sorted.sort((a, b) => {
-    const valA = field === 'name' ? a.name : a.id;
-    const valB = field === 'name' ? b.name : b.id;
-    return dir === 'asc'
-      ? (valA > valB ? 1 : -1)
-      : (valA < valB ? 1 : -1);
+// sortering toepassen op de characters
+// field is 'name' of 'id', dir is 'asc' of 'desc'
+const sorteerCharacters = (lijst, sortering) => {
+  const gesorteerd = [...lijst];
+  const [veld, richting] = sortering.split('-');
+
+  gesorteerd.sort((a, b) => {
+    const waardeA = veld === 'name' ? a.name : a.id;
+    const waardeB = veld === 'name' ? b.name : b.id;
+    return richting === 'asc'
+      ? (waardeA > waardeB ? 1 : -1)
+      : (waardeA < waardeB ? 1 : -1);
   });
-  return sorted;
+
+  return gesorteerd;
 };
 
-const loadCharacters = async () => {
-  const { page, filters } = state.characters;
-  const grid   = document.querySelector('#characters-grid');
-  const pagNav = document.querySelector('#pagination-characters');
+const laadCharacters = async () => {
+  const { pagina, filters } = staat.characters;
+  const grid = document.querySelector('#characters-grid');
+  const paginatie = document.querySelector('#pagination-characters');
 
   grid.innerHTML = '';
   showLoader('characters');
 
   try {
     const data = await fetchCharacters({
-      page,
-      name:    filters.name,
-      status:  filters.status,
+      page: pagina,
+      name: filters.naam,
+      status: filters.status,
       species: filters.species,
-      gender:  filters.gender,
+      gender: filters.gender,
     });
 
-    state.characters.total = data.info.pages;
+    staat.characters.totaal = data.info.pages;
+    const gesorteerd = sorteerCharacters(data.results, filters.sortering);
 
-    const sorted = sortCharacters(data.results, filters.sort);
-
-    // Update result count - demonstrates template literals
     document.querySelector('#result-count').textContent =
-      `${data.info.count} characters found (page ${page} of ${data.info.pages})`;
+      `${data.info.count} characters gevonden (pagina ${pagina} van ${data.info.pages})`;
 
-    // Render cards - demonstrates forEach, arrow functions, DOM manipulation
-    sorted.forEach(character => {
-      const card = renderCharacterCard(character, openModal, updateFavBadge);
-
-      // IntersectionObserver: animate cards as they enter viewport
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px)';
-      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      cardObserver.observe(card);
-
-      grid.appendChild(card);
+    // kaart begint onzichtbaar en komt in beeld via de IntersectionObserver
+    gesorteerd.forEach(character => {
+      const kaart = renderCharacterCard(character, openModal, updateFavTeller);
+      kaart.style.opacity = '0';
+      kaart.style.transform = 'translateY(20px)';
+      kaart.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      kaartObserver.observe(kaart);
+      grid.appendChild(kaart);
     });
 
-    renderPagination(pagNav, { current: page, total: data.info.pages }, (p) => {
-      state.characters.page = p;
-      loadCharacters();
+    renderPagination(paginatie, { current: pagina, total: data.info.pages }, (p) => {
+      staat.characters.pagina = p;
+      laadCharacters();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-  } catch (error) {
-    // No results (API returns 404 for empty filter results)
+  } catch (fout) {
     renderNoResults(grid, `Geen characters gevonden. Probeer een andere zoekterm of filter. 🔭`);
-    pagNav.innerHTML = '';
-    document.querySelector('#result-count').textContent = '0 characters found';
+    paginatie.innerHTML = '';
+    document.querySelector('#result-count').textContent = '0 characters gevonden';
   } finally {
     hideLoader('characters');
   }
 };
 
-// ---- Character filters & search ----
+// zoekbalk met kleine vertraging zodat we niet elke toetsaanslag een request sturen
+let zoekTimer = null;
 
-let searchDebounce = null;
-
-// Demonstrates: callback, setTimeout (debounce pattern)
 document.querySelector('#search-characters').addEventListener('input', (e) => {
-  clearTimeout(searchDebounce);
-  searchDebounce = setTimeout(() => {
-    state.characters.filters.name = e.target.value.trim();
-    state.characters.page = 1;
-    loadCharacters();
+  clearTimeout(zoekTimer);
+  zoekTimer = setTimeout(() => {
+    staat.characters.filters.naam = e.target.value.trim();
+    staat.characters.pagina = 1;
+    laadCharacters();
   }, 400);
 });
 
 document.querySelector('#filter-status').addEventListener('change', (e) => {
-  state.characters.filters.status = e.target.value;
-  state.characters.page = 1;
-  loadCharacters();
+  staat.characters.filters.status = e.target.value;
+  staat.characters.pagina = 1;
+  laadCharacters();
 });
 
 document.querySelector('#filter-species').addEventListener('change', (e) => {
-  state.characters.filters.species = e.target.value;
-  state.characters.page = 1;
-  loadCharacters();
+  staat.characters.filters.species = e.target.value;
+  staat.characters.pagina = 1;
+  laadCharacters();
 });
 
 document.querySelector('#filter-gender').addEventListener('change', (e) => {
-  state.characters.filters.gender = e.target.value;
-  state.characters.page = 1;
-  loadCharacters();
+  staat.characters.filters.gender = e.target.value;
+  staat.characters.pagina = 1;
+  laadCharacters();
 });
 
 document.querySelector('#sort-characters').addEventListener('change', (e) => {
-  state.characters.filters.sort = e.target.value;
-  loadCharacters();
+  staat.characters.filters.sortering = e.target.value;
+  laadCharacters();
 });
 
-// ============================================================
+// -----------------------------------------------
 // EPISODES
-// ============================================================
+// -----------------------------------------------
 
-const loadEpisodes = async () => {
-  const { page, filters } = state.episodes;
-  const grid   = document.querySelector('#episodes-grid');
-  const pagNav = document.querySelector('#pagination-episodes');
+const laadEpisodes = async () => {
+  const { pagina, filters } = staat.episodes;
+  const grid = document.querySelector('#episodes-grid');
+  const paginatie = document.querySelector('#pagination-episodes');
 
   grid.innerHTML = '';
   showLoader('episodes');
 
   try {
-    const data = await fetchEpisodes({ page, name: filters.name, episode: filters.episode });
-    state.episodes.total = data.info.pages;
+    const data = await fetchEpisodes({ page: pagina, name: filters.naam, episode: filters.seizoen });
+    staat.episodes.totaal = data.info.pages;
 
-    // Demonstrates: for...of loop
     for (const episode of data.results) {
       grid.appendChild(renderEpisodeCard(episode));
     }
 
-    renderPagination(pagNav, { current: page, total: data.info.pages }, (p) => {
-      state.episodes.page = p;
-      loadEpisodes();
+    renderPagination(paginatie, { current: pagina, total: data.info.pages }, (p) => {
+      staat.episodes.pagina = p;
+      laadEpisodes();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
   } catch {
-    renderNoResults(grid, 'No episodes found.');
-    pagNav.innerHTML = '';
+    renderNoResults(grid, 'Geen episodes gevonden.');
+    paginatie.innerHTML = '';
   } finally {
     hideLoader('episodes');
   }
 };
 
-let epSearchDebounce = null;
+let epZoekTimer = null;
 
 document.querySelector('#search-episodes').addEventListener('input', (e) => {
-  clearTimeout(epSearchDebounce);
-  epSearchDebounce = setTimeout(() => {
-    state.episodes.filters.name = e.target.value.trim();
-    state.episodes.page = 1;
-    loadEpisodes();
+  clearTimeout(epZoekTimer);
+  epZoekTimer = setTimeout(() => {
+    staat.episodes.filters.naam = e.target.value.trim();
+    staat.episodes.pagina = 1;
+    laadEpisodes();
   }, 400);
 });
 
 document.querySelector('#filter-season').addEventListener('change', (e) => {
-  state.episodes.filters.episode = e.target.value;
-  state.episodes.page = 1;
-  loadEpisodes();
+  staat.episodes.filters.seizoen = e.target.value;
+  staat.episodes.pagina = 1;
+  laadEpisodes();
 });
 
-// ============================================================
-// LOCATIONS
-// ============================================================
+// -----------------------------------------------
+// LOCATIES
+// -----------------------------------------------
 
-const loadLocations = async () => {
-  const { page, filters } = state.locations;
-  const grid   = document.querySelector('#locations-grid');
-  const pagNav = document.querySelector('#pagination-locations');
+const laadLocaties = async () => {
+  const { pagina, filters } = staat.locations;
+  const grid = document.querySelector('#locations-grid');
+  const paginatie = document.querySelector('#pagination-locations');
 
   grid.innerHTML = '';
   showLoader('locations');
 
   try {
-    const data = await fetchLocations({ page, name: filters.name, type: filters.type });
-    state.locations.total = data.info.pages;
+    const data = await fetchLocations({ page: pagina, name: filters.naam, type: filters.type });
+    staat.locations.totaal = data.info.pages;
 
-    // Demonstrates: array .map() + forEach
-    data.results.map(loc => renderLocationCard(loc)).forEach(card => grid.appendChild(card));
+    data.results.map(loc => renderLocationCard(loc)).forEach(kaart => grid.appendChild(kaart));
 
-    renderPagination(pagNav, { current: page, total: data.info.pages }, (p) => {
-      state.locations.page = p;
-      loadLocations();
+    renderPagination(paginatie, { current: pagina, total: data.info.pages }, (p) => {
+      staat.locations.pagina = p;
+      laadLocaties();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
   } catch {
-    renderNoResults(grid, 'No locations found.');
-    pagNav.innerHTML = '';
+    renderNoResults(grid, 'Geen locaties gevonden.');
+    paginatie.innerHTML = '';
   } finally {
     hideLoader('locations');
   }
 };
 
-let locSearchDebounce = null;
+let locZoekTimer = null;
 
 document.querySelector('#search-locations').addEventListener('input', (e) => {
-  clearTimeout(locSearchDebounce);
-  locSearchDebounce = setTimeout(() => {
-    state.locations.filters.name = e.target.value.trim();
-    state.locations.page = 1;
-    loadLocations();
+  clearTimeout(locZoekTimer);
+  locZoekTimer = setTimeout(() => {
+    staat.locations.filters.naam = e.target.value.trim();
+    staat.locations.pagina = 1;
+    laadLocaties();
   }, 400);
 });
 
 document.querySelector('#filter-loc-type').addEventListener('change', (e) => {
-  state.locations.filters.type = e.target.value;
-  state.locations.page = 1;
-  loadLocations();
+  staat.locations.filters.type = e.target.value;
+  staat.locations.pagina = 1;
+  laadLocaties();
 });
 
-// ============================================================
-// FAVORITES
-// ============================================================
+// -----------------------------------------------
+// FAVORIETEN
+// -----------------------------------------------
 
-const updateFavBadge = () => {
-  const count = getFavorites().length;
-  document.querySelector('#fav-count').textContent = count;
+// het getal op de favorieten knop bijwerken
+const updateFavTeller = () => {
+  const aantal = getFavorites().length;
+  document.querySelector('#fav-count').textContent = aantal;
 };
 
-const renderFavorites = () => {
-  const favorites = getFavorites();
+const toonFavorieten = () => {
+  const favorieten = getFavorites();
   const grid = document.querySelector('#favorites-grid');
-  const noFavMsg = document.querySelector('#no-favorites');
+  const leegBericht = document.querySelector('#no-favorites');
 
   grid.innerHTML = '';
 
-  // Ternary operator: show/hide empty message
-  noFavMsg.classList.toggle('hidden', favorites.length > 0);
+  // lege staat tonen of verbergen afhankelijk van of er favorieten zijn
+  leegBericht.classList.toggle('hidden', favorieten.length > 0);
 
-  // Demonstrates: forEach, arrow functions
-  favorites.forEach(character => {
-    const card = renderCharacterCard(character, openModal, () => {
-      updateFavBadge();
-      renderFavorites();
+  favorieten.forEach(character => {
+    const kaart = renderCharacterCard(character, openModal, () => {
+      updateFavTeller();
+      toonFavorieten();
     });
-    grid.appendChild(card);
+    grid.appendChild(kaart);
   });
 };
 
 document.querySelector('#clear-favorites').addEventListener('click', () => {
-  if (confirm('Clear all favourites?')) {
+  if (confirm('Wil je alle favorieten verwijderen?')) {
     clearFavorites();
-    updateFavBadge();
-    renderFavorites();
-    showToast('🗑️ All favourites cleared');
+    updateFavTeller();
+    toonFavorieten();
+    showToast('🗑️ Alle favorieten verwijderd');
   }
 });
 
-// ============================================================
+// -----------------------------------------------
 // MODAL
-// ============================================================
+// -----------------------------------------------
 
-const modal    = document.querySelector('#modal');
-const modalContent = document.querySelector('#modal-content');
+const modal = document.querySelector('#modal');
+const modalInhoud = document.querySelector('#modal-content');
 
 const openModal = (character) => {
-  modalContent.innerHTML = renderCharacterModal(character);
+  modalInhoud.innerHTML = renderCharacterModal(character);
   modal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 };
 
-const closeModal = () => {
+const sluitModal = () => {
   modal.classList.add('hidden');
   document.body.style.overflow = '';
 };
 
-document.querySelector('.modal-close').addEventListener('click', closeModal);
-document.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+document.querySelector('.modal-close').addEventListener('click', sluitModal);
+document.querySelector('.modal-backdrop').addEventListener('click', sluitModal);
 
-// Close on Escape key
+// ook sluiten met escape toets
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') sluitModal();
 });
 
-// ============================================================
-// MUTATION OBSERVER - watch for new cards added to DOM
-// Demonstrates: Observer API (MutationObserver)
-// ============================================================
+// -----------------------------------------------
+// MUTATION OBSERVER
+// houdt bij wanneer nieuwe kaarten aan het grid toegevoegd worden
+// -----------------------------------------------
 
-const gridContainer = document.querySelector('#characters-grid');
-const mutationObserver = new MutationObserver((mutations) => {
+const karakterGrid = document.querySelector('#characters-grid');
+const domObserver = new MutationObserver((mutations) => {
   for (const mutation of mutations) {
     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-      // Could add logging or analytics here
-      console.log(`DOM updated: ${mutation.addedNodes.length} card(s) added to grid`);
+      console.log(`${mutation.addedNodes.length} kaart(en) toegevoegd aan het grid`);
     }
   }
 });
 
-mutationObserver.observe(gridContainer, { childList: true });
+domObserver.observe(karakterGrid, { childList: true });
 
-// ============================================================
-// INIT - Run on page load
-// Demonstrates: window load event, async/await
-// ============================================================
+// -----------------------------------------------
+// APP STARTEN
+// -----------------------------------------------
 
 window.addEventListener('load', async () => {
-  // Restore user preference: last visited page
-  updateFavBadge();
-  navigateTo(state.currentPage);
+  updateFavTeller();
+  gaNaar(staat.huidigePagina);
 });

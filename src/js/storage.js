@@ -1,91 +1,78 @@
 'use strict';
 
-// storage.js - Beheert alle localStorage interacties
-// Slaat op: favorieten, thema voorkeur, laatste bezochte pagina
-// Data blijft bewaard tussen sessies via JSON serialisatie
+// storage.js - beheert alle localStorage interacties
+// slaat op: favorieten, thema voorkeur, laatste bezochte pagina
+// data blijft bewaard tussen sessies via JSON serialisatie
 
-// ============================================
-// storage.js - LocalStorage helpers
-// Demonstrates: localStorage, JSON.parse/stringify,
-//   arrow functions, const, try/catch
-// ============================================
-
-const KEYS = {
-  FAVORITES: 'rm_favorites',
-  THEME: 'rm_theme',
-  LAST_PAGE: 'rm_last_page',
+// sleutelnamen voor localStorage, zo vermijd ik typefouten
+const SLEUTELS = {
+  FAVORIETEN: 'rm_favorites',
+  THEMA: 'rm_theme',
+  LAATSTE_PAGINA: 'rm_last_page',
 };
 
-// ---- Favorites ----
-
-/**
- * Get all saved favorites from localStorage
- * Demonstrates: JSON.parse, try/catch, const
- */
-export const getFavorites = () => {
+// alle favorieten ophalen uit localStorage
+// als er niks is of als JSON.parse faalt geef ik gewoon een lege array terug
+export const getFavorieten = () => {
   try {
-    const raw = localStorage.getItem(KEYS.FAVORITES);
-    return raw ? JSON.parse(raw) : [];
+    const opgeslagen = localStorage.getItem(SLEUTELS.FAVORIETEN);
+    return opgeslagen ? JSON.parse(opgeslagen) : [];
   } catch {
     return [];
   }
 };
 
-/**
- * Save an array of favorites to localStorage
- */
-export const saveFavorites = (favorites) => {
-  localStorage.setItem(KEYS.FAVORITES, JSON.stringify(favorites));
+// favorieten opslaan
+// moet eerst omgezet worden naar string want localStorage werkt alleen met strings
+export const slaFavorietenOp = (favorieten) => {
+  localStorage.setItem(SLEUTELS.FAVORIETEN, JSON.stringify(favorieten));
 };
 
-/**
- * Toggle a character in/out of favorites
- * Demonstrates: array methods (findIndex, filter, push), const
- * @returns {boolean} true if added, false if removed
- */
-/**
- * Voegt een character toe aan favorieten of verwijdert hem
- * Gebruikt findIndex om te checken of character al bestaat
- * Slaat bijgewerkte array op via JSON.stringify in localStorage
- */
-export const toggleFavorite = (character) => {
-  const favorites = getFavorites();
-  const existingIndex = favorites.findIndex(f => f.id === character.id);
+// kijkt eerst of de character al in de lijst staat
+// zo ja verwijderen, zo nee toevoegen
+export const toggleFavoriet = (character) => {
+  const favorieten = getFavorieten();
 
-  if (existingIndex !== -1) {
-    // Remove it
-    favorites.splice(existingIndex, 1);
-    saveFavorites(favorites);
+  const bestaatAl = favorieten.findIndex(f => f.id === character.id);
+
+  if (bestaatAl !== -1) {
+    // staat er al in dus verwijderen
+    favorieten.splice(bestaatAl, 1);
+    slaFavorietenOp(favorieten);
     return false;
   } else {
-    // Add it
-    favorites.push(character);
-    saveFavorites(favorites);
+    // nog niet in de lijst dus toevoegen
+    favorieten.push(character);
+    slaFavorietenOp(favorieten);
     return true;
   }
 };
 
-/**
- * Check if a character is favorited
- */
-export const isFavorite = (id) => {
-  const favorites = getFavorites();
-  return favorites.some(f => f.id === id);
+// checken of een character al een favoriet is
+export const isFavoriet = (id) => {
+  const favorieten = getFavorieten();
+  return favorieten.some(f => f.id === id);
 };
 
-/**
- * Clear all favorites
- */
-export const clearFavorites = () => {
-  localStorage.removeItem(KEYS.FAVORITES);
+// alle favorieten wissen
+export const verwijderAlleFavorieten = () => {
+  localStorage.removeItem(SLEUTELS.FAVORIETEN);
 };
 
-// ---- Theme Preference ----
+// thema ophalen, standaard dark als er nog niks opgeslagen is
+export const getThema = () => localStorage.getItem(SLEUTELS.THEMA) || 'dark';
+export const slaThemaOp = (thema) => localStorage.setItem(SLEUTELS.THEMA, thema);
 
-export const getTheme = () => localStorage.getItem(KEYS.THEME) || 'dark';
-export const saveTheme = (theme) => localStorage.setItem(KEYS.THEME, theme);
+// laatste bezochte pagina onthouden zodat je na herladen op dezelfde pagina uitkomt
+export const getLaatstePagina = () => localStorage.getItem(SLEUTELS.LAATSTE_PAGINA) || 'characters';
+export const slaLaatstePaginaOp = (pagina) => localStorage.setItem(SLEUTELS.LAATSTE_PAGINA, pagina);
 
-// ---- Last visited page ----
-
-export const getLastPage = () => localStorage.getItem(KEYS.LAST_PAGE) || 'characters';
-export const saveLastPage = (page) => localStorage.setItem(KEYS.LAST_PAGE, page);
+// aliases zodat de imports in ui.js en main.js blijven werken
+export const getFavorites = getFavorieten;
+export const clearFavorites = verwijderAlleFavorieten;
+export const isFavorite = isFavoriet;
+export const toggleFavorite = toggleFavoriet;
+export const getTheme = getThema;
+export const saveTheme = slaThemaOp;
+export const getLastPage = getLaatstePagina;
+export const saveLastPage = slaLaatstePaginaOp;
