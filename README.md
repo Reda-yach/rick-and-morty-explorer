@@ -1,4 +1,4 @@
-# 🛸 Rick & Morty Explorer
+# Rick & Morty Explorer
 
 Project voor het vak Web Advanced. Ik heb een SPA gemaakt met de Rick and Morty API waarbij je characters, episodes en locaties kan bekijken, filteren en zoeken. Characters kan je ook opslaan als favoriet.
 
@@ -124,7 +124,7 @@ Getest op:
 
 ---
 
-## 📝 Voortgang
+## Voortgang
 - [x] Project opgezet met Vite
 - [x] Rick and Morty API gekoppeld
 - [x] Characters pagina met filters en sortering
@@ -148,3 +148,24 @@ Getest op:
 - Vite documentatie: https://vitejs.dev/
 - Lescursus Web Advanced — EHB (2025-2026)
 - AI-assistent (Claude) gebruikt als hulpmiddel bij het project. Chatlog beschikbaar op aanvraag.
+
+## AI-Log
+
+Ik heb Claude (claude.ai) gebruikt als hulpmiddel bij dit project.
+
+### Hoe ik AI heb gebruikt:
+- Hulp bij het opzetten van de Vite projectstructuur
+- Debuggen van de fetch functie (foutafhandeling)
+- Uitleg over hoe IntersectionObserver werkt
+- Hulp bij het schrijven van de CSS grid layout
+- Vragen gesteld over localStorage en JSON.parse/stringify
+
+### Wat ik zelf heb gedaan:
+- De logica voor filters en sortering zelf uitgewerkt
+- Variabelenamen aangepast naar Nederlands
+- Comments zelf geschreven en uitgelegd
+- De README zelf ingevuld
+- Alles getest en debugged in de browser
+
+### Gebruikte AI tool:
+- Claude (Anthropic) — https://claude.ai
