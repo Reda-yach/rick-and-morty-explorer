@@ -119,7 +119,6 @@ npm run dev
 
 Getest op:
 - Google Chrome
-- Mozilla Firefox
 - Microsoft Edge
 - Mobiel (responsive op 375px en 768px)
 
@@ -147,5 +146,5 @@ Getest op:
 - MDN Web Docs — localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 - MDN Web Docs — IntersectionObserver: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 - Vite documentatie: https://vitejs.dev/
-- Lescursus Web Advanced — EHB (2024-2025)
+- Lescursus Web Advanced — EHB (2025-2026)
 - AI-assistent (Claude) gebruikt als hulpmiddel bij het project. Chatlog beschikbaar op aanvraag.
