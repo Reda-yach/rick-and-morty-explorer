@@ -28,46 +28,48 @@ Project voor het vak Web Advanced. Ik heb een SPA gemaakt met de Rick and Morty 
 
 | Concept | Bestand + uitleg |
 |---|---|
-| Elementen selecteren | `main.js` — `document.querySelector('#theme-toggle')` overal gebruikt |
-| Elementen manipuleren | `ui.js` — `createElement`, `appendChild`, `innerHTML`, `classList.toggle` |
-| Events koppelen | `main.js` — `addEventListener` voor click, input, change, keydown en load |
+| Elementen selecteren | `main.js` lijn 62 — `document.querySelector` bij de `gaNaar` functie |
+| Elementen manipuleren | `ui.js` lijn 32 — `renderCharacterCard` maakt kaarten aan via `createElement` en `innerHTML` |
+| Events koppelen | `main.js` lijn 62 — `addEventListener` voor click, input, change, keydown en load |
 
 ### Modern JavaScript
 
 | Concept | Bestand + uitleg |
 |---|---|
-| Constanten | `api.js` — `const BASE_URL`, `storage.js` — `const SLEUTELS` |
-| Template literals | `ui.js` — kaart HTML opbouwen met backticks en `${}` |
-| Iteratie over arrays | `main.js` — `forEach` bij het renderen van kaarten |
-| Array methodes | `storage.js` — `findIndex`, `splice`, `push`, `some`; `main.js` — `map`, `filter`, `sort` |
-| Arrow functions | Overal — bv. `api.js`: `const fetchFromAPI = async (endpoint) => {...}` |
-| Ternary operator | `ui.js` — `isAlFavoriet ? '⭐' : '☆'` |
-| Callback functions | `main.js` — de zoekbalk gebruikt een `setTimeout` callback (debounce) |
-| Promises | `api.js` — `fetchFromAPI` geeft een Promise terug |
-| Async & Await | `main.js` — `laadCharacters`, `laadEpisodes`, `laadLocaties` |
-| Observer API | `ui.js` — `IntersectionObserver` voor kaart animaties; `main.js` — `MutationObserver` |
+| Constanten | `api.js` lijn 10 — `const BASE_URL`, `storage.js` lijn 16 — `const SLEUTELS` |
+| Template literals | `ui.js` lijn 32 — kaart HTML opbouwen met backticks en `${}` |
+| Iteratie over arrays | `main.js` lijn 108 — `forEach` bij het renderen van kaarten in `laadCharacters` |
+| Array methodes | `storage.js` lijn 33 — `findIndex`, `splice`, `push`, `some` in `toggleFavoriet` |
+| Arrow functions | `api.js` lijn 29 — `const fetchFromAPI = async (endpoint) => {...}` |
+| Ternary operator | `ui.js` lijn 32 — `isAlFavoriet ? '⭐' : '☆'` |
+| Callback functions | `main.js` lijn 108 — debounce via `setTimeout` callback in zoekbalk |
+| Promises | `api.js` lijn 29 — `fetchFromAPI` geeft een Promise terug |
+| Async & Await | `main.js` lijn 108 — `laadCharacters`, lijn 195 — `laadEpisodes`, lijn 246 — `laadLocaties` |
+| Observer API | `ui.js` lijn 199 — `IntersectionObserver` voor kaart animaties; `main.js` — `MutationObserver` |
 
 ### Data & API
 
 | Concept | Bestand + uitleg |
 |---|---|
-| Fetch | `api.js` — `await fetch(...)` met foutafhandeling |
-| JSON | `storage.js` — `JSON.parse` bij ophalen, `JSON.stringify` bij opslaan |
+| Fetch | `api.js` lijn 29 — `await fetch(...)` met foutafhandeling |
+| JSON | `storage.js` lijn 16 — `JSON.parse` bij ophalen, `JSON.stringify` bij opslaan |
+
 
 ### Opslag & Validatie
 
 | Concept | Bestand + uitleg |
 |---|---|
-| LocalStorage | `storage.js` — favorieten, thema en laatste pagina worden opgeslagen |
+| LocalStorage | `storage.js` lijn 16 — favorieten, thema en laatste pagina worden opgeslagen |
 | Gebruikersvoorkeuren | Dark/light thema en laatste pagina blijven bewaard na herladen |
+| Toast meldingen | `ui.js` lijn 32 — gebruiker krijgt melding bij toevoegen/verwijderen favoriet |
 
 ### Styling & Layout
 
 | Concept | Bestand + uitleg |
 |---|---|
-| CSS Grid | `cards.css` — `.card-grid` gebruikt CSS grid |
+| CSS Grid | `cards.css` lijn 1 — `.card-grid` gebruikt CSS grid |
 | Flexbox | `main.css` — header en controls gebruiken flexbox |
-| Gebruiksvriendelijke elementen | Ster knop voor favorieten, modal sluitknop, theme toggle, toast meldingen |
+| Animaties | `cards.css` — kaarten bewegen omhoog bij hover; `ui.js` lijn 199 — kaarten fade in via IntersectionObserver |
 
 ### Tooling & Structuur
 
