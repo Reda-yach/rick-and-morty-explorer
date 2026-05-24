@@ -109,7 +109,7 @@ rick-and-morty-explorer/
 Je hebt Node.js nodig: https://nodejs.org/
 
 ```bash
-git clone https://github.com/JOUWUSERNAME/rick-and-morty-explorer.git
+git clone https://github.com/Reda-yach/rick-and-morty-explorer.git
 cd rick-and-morty-explorer
 npm install
 npm run dev
@@ -125,6 +125,7 @@ Getest op:
 - Mobiel (responsive op 375px en 768px)
 
 ---
+
 
 ## Voortgang
 - [x] Project opgezet met Vite
@@ -171,3 +172,15 @@ Ik heb Claude (claude.ai) gebruikt als hulpmiddel bij dit project.
 
 ### Gebruikte AI tool:
 - Claude (Anthropic) — https://claude.ai
+
+### Chatlog overzicht
+
+| # | Wat ik gevraagd heb | Wat ik ermee gedaan heb |
+|---|---|---|
+| 1 | Vite project opzetten met Rick and Morty API | Als startpunt gebruikt, zelf aangepast |
+| 2 | Uitleg over hoe fetch en async/await werkt | Begrepen en toegepast in api.js |
+| 3 | Hulp bij CSS grid layout voor de kaarten | Zelf aangepast naar eigen stijl |
+| 4 | Uitleg over IntersectionObserver | Toegepast in ui.js voor kaart animaties |
+| 5 | Hulp bij localStorage voor favorieten | Zelf variabelenamen aangepast naar Nederlands |
+| 6 | Debuggen van filter functionaliteit | Zelf opgelost na uitleg |
+| 7 | README structuur en inhoud | Zelf ingevuld en aangepast |
